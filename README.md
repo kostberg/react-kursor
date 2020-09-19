@@ -1,4 +1,4 @@
-# react-kursor
+# React Kursor
 
 > Simple react custom cursor based on plain javascript package &quot;Kursor&quot;
 
