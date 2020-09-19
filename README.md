@@ -14,17 +14,13 @@ npm install --save react-kursor
 
 ```jsx
 import React, { Component } from 'react'
-
 import MyComponent from 'react-kursor'
-import 'react-kursor/dist/index.css'
 
-class Example extends Component {
-  render() {
+function Example(){
     return <MyComponent />
-  }
 }
 ```
 
 ## License
 
-MIT © [kasposten](https://github.com/kasposten)
+MIT © [kostberg](https://github.com/kostberg)
