@@ -191,6 +191,7 @@ function Kursor({
     return (
         <StyleCacheProvider>
             <Style />
+            { console.log(classes.kursor.join(" ")) }
             <div ref={ setKursorNode } style={{ "--k-color": color }} className={ classes.kursor.join(" ") } />
             <div ref={ setKursorChildNode } style={{ "--k-color": color }}  className={ classes.kursorChild.join(" ") } />
             <KursorContext.Provider value={{ hoverOut, hoverIn }}>
