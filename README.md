@@ -1,4 +1,4 @@
-# React Kursor
+# React Kursor 🔥🔥
 
 > Simple react custom cursor based on plain javascript package &quot;Kursor&quot;
 
@@ -13,13 +13,43 @@ npm install --save react-kursor
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
-import MyComponent from 'react-kursor'
+import React from 'react'
+import Kursor from 'react-kursor'
 
-function Example(){
-    return <MyComponent />
+function App(){
+    return (
+        <Kursor color="#ffffff">
+            // Content goes here...
+        </Kursor>
+    )
 }
 ```
+
+## Implement hover functionality on kursor wrapped component
+```jsx
+import React from 'react'
+import { useKursor } from 'react-kursor'
+
+function Button(){
+    const { hoverIn, hoverOut } = useKursor();
+    return (
+        <div className="button" onMouseEnter={ hoverIn } onMouseLeave={ hoverOut }>
+            Button 
+        </div>
+    )
+}
+```
+
+## Options
+* removeDefaultCursor = true \<boolean\>
+* color = "#000000" \<string (either hexcode or rgb)\>
+
+## Options coming soon
+* kursorId: key = "" \<any\>
+* local = false \<boolean\>
+* shouldRender = true \<boolean\>
+* type = 1 \<int\>
+
 
 ## License
 
