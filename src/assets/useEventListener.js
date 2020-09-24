@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import { useEffect } from 'react';
 import useDebounceFunc from './useDebounceFunc';
 

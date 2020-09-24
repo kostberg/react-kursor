@@ -1,15 +1,33 @@
 /* eslint-disable prettier/prettier */
 import React, { useCallback, useLayoutEffect, useMemo, useRef, useReducer, useContext } from 'react';
-import useEventListener from './assets/useEventListener';
-import useFakeAwait from './assets/useFakeAwait';
 import { StyleCacheProvider } from 'react-css-component';
 import Style from './assets/style';
+import useEventListener from './assets/useEventListener';
+import useFakeAwait from './assets/useFakeAwait';
 
 const KursorContext = React.createContext();
 
 export const useKursor = () => {
-    return useContext(KursorContext);
+    const dispatch = useContext(KursorContext);
+    
+    return {
+        hoverIn: () => {
+            dispatch({
+                type: "addClass", payload: {
+                    classname: "--hover"
+                } 
+            })
+        },
+        hoverOut: () => {
+            dispatch({
+                type: "removeClass", payload: {
+                    classname: "--hover"
+                } 
+            })
+        }
+    }
 }
+
 
 function hexToRgb(hex) {
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
@@ -69,6 +87,8 @@ function reducer(state, action) {
     }
 }
 
+const MemoizedChildren = React.memo(({ children }) => children);
+
 function Kursor({
     type = 1,
     removeDefaultCursor = true,
@@ -84,7 +104,8 @@ function Kursor({
     const compare = useCallback(ref => {
         if(!ref) return false;
         return ref;
-    }, [])
+    }, []);
+    
     const [kursorNode, setKursorNode] = useFakeAwait(compare, []);
     const [kursorChildNode, setKursorChildNode] = useFakeAwait(compare, []);
     const [classes, dispatch] = useReducer(reducer, {
@@ -99,29 +120,28 @@ function Kursor({
         ]
     });
 
-    // Render effect
     useLayoutEffect(() => {
         if (!shouldRender) return;
-    
+        
         if (props.current.removeDefaultCursor){
             document.body.classList.add('notCursor');
         }
-
+        
         return () => {
             document.body.classList.remove('notCursor');
         }
     }, [shouldRender])
-
+    
     const mouseMove = useCallback(e => {
         if(!kursorNode || !kursorChildNode) return;
-
+        
         kursorNode.style.left = `${e.x}px`;
         kursorNode.style.top = `${e.y}px`;
-
+        
         kursorChildNode.style.left = `${e.x}px`;
         kursorChildNode.style.top = `${e.y}px`;
     }, [kursorNode, kursorChildNode]);
-
+    
     const mouseEnter = useCallback(() => {
         dispatch({
             type: "removeClass", payload: {
@@ -135,6 +155,7 @@ function Kursor({
             }
         })
     }, []);
+    
 
     const mouseLeave = useCallback(() => {
         dispatch({
@@ -166,21 +187,6 @@ function Kursor({
         })
     }, []);
 
-    const hoverIn = useCallback(() => {
-        dispatch({
-            type: "addClass", payload: {
-                classname: "--hover"
-            } 
-        })
-    }, [])
-
-    const hoverOut = useCallback(() => {
-        dispatch({
-            type: "removeClass", payload: {
-                classname: "--hover"
-            } 
-        })
-    }, [])
 
     useEventListener(window, 'mousemove', mouseMove);
     useEventListener(document, 'mouseenter', mouseEnter);
@@ -191,13 +197,13 @@ function Kursor({
     return (
         <StyleCacheProvider>
             <Style />
-            <div ref={ setKursorNode } style={{ "--k-color": color }} className={ classes.kursor.join(" ") } />
-            <div ref={ setKursorChildNode } style={{ "--k-color": color }}  className={ classes.kursorChild.join(" ") } />
-            <KursorContext.Provider value={{ hoverOut, hoverIn }}>
-                { children }
+            <KursorContext.Provider value={ dispatch }>
+                <div ref={ setKursorNode } style={{ "--k-color": color }} className={ classes.kursor.join(" ") } />
+                <div ref={ setKursorChildNode } style={{ "--k-color": color }} className={ classes.kursorChild.join(" ") } />
+                <MemoizedChildren children={ children }/>
             </KursorContext.Provider>
         </StyleCacheProvider>
     )
 }
 
-export default Kursor;
+export default React.memo(Kursor);
